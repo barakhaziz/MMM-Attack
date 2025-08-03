@@ -1,6 +1,6 @@
-# MMM-Attack: Multi-Modal Multi-turn Jailbreak Attack System
+# MMM-Attack:Scalable Multi-Agent Jailbreaking via Shared Memory
 
-This project is a structured Python implementation of a multi-turn jailbreak attack system, converted from a Jupyter notebook while preserving all original content exactly as it was.
+This project  presents an innovative and novel multi-turn attack using multi-agent approach with multi-context capabilities.
 
 ## Project Structure
 
