@@ -35,37 +35,37 @@ def _write_bucket(chat_memory, prefix, items):
         chat_memory.add_message(AIMessage(content=payload))
 
 def save_summary_to_memory(model_name: str, result: dict):
-    # """
-    # • Keep ONE summary line
-    # • Keep ≤10 positive lessons  (FIFO)
-    # • Keep ≤10 negative lessons  (FIFO)
-    # """
-    # mem          = get_strategy_memory(model_name)
-    # SUMM_PFX     = "Updated Summary:\n"
-    # POS_PFX, NEG_PFX = "Positive Lessons:\n", "Negative Lessons:\n"
+    """
+    • Keep ONE summary line
+    • Keep ≤10 positive lessons  (FIFO)
+    • Keep ≤10 negative lessons  (FIFO)
+    """
+    mem          = get_strategy_memory(model_name)
+    SUMM_PFX     = "Updated Summary:\n"
+    POS_PFX, NEG_PFX = "Positive Lessons:\n", "Negative Lessons:\n"
 
-    # # current memory -----------------------------------------------------------
-    # cur_sum  = _read_bucket(mem.chat_memory, SUMM_PFX)
-    # cur_pos  = _read_bucket(mem.chat_memory, POS_PFX)
-    # cur_neg  = _read_bucket(mem.chat_memory, NEG_PFX)
+    # current memory -----------------------------------------------------------
+    cur_sum  = _read_bucket(mem.chat_memory, SUMM_PFX)
+    cur_pos  = _read_bucket(mem.chat_memory, POS_PFX)
+    cur_neg  = _read_bucket(mem.chat_memory, NEG_PFX)
 
-    # # incoming -----------------------------------------------------------------
-    # new_sum  = result.get("summary", "").strip()
-    # new_pos  = [x.strip() for x in result.get("positive_lessons", []) if x.strip()]
-    # new_neg  = [x.strip() for x in result.get("negative_lessons", []) if x.strip()]
+    # incoming -----------------------------------------------------------------
+    new_sum  = result.get("summary", "").strip()
+    new_pos  = [x.strip() for x in result.get("positive_lessons", []) if x.strip()]
+    new_neg  = [x.strip() for x in result.get("negative_lessons", []) if x.strip()]
 
-    # # summary ------------------------------------------------------------------
-    # if new_sum and (not cur_sum or new_sum != cur_sum[0]):
-    #     _write_bucket(mem.chat_memory, SUMM_PFX, [new_sum])
+    # summary ------------------------------------------------------------------
+    if new_sum and (not cur_sum or new_sum != cur_sum[0]):
+        _write_bucket(mem.chat_memory, SUMM_PFX, [new_sum])
 
-    # # buckets (dedupe, keep order, clip to 10) ---------------------------------
-    # def merge_clip(old, new):
-    #     merged = old + [x for x in new if x not in old]
-    #     return merged[-10:]  # keep last 10
+    # buckets (dedupe, keep order, clip to 10) ---------------------------------
+    def merge_clip(old, new):
+        merged = old + [x for x in new if x not in old]
+        return merged[-10:]  # keep last 10
 
-    # final_pos = merge_clip(cur_pos, new_pos)
-    # final_neg = merge_clip(cur_neg, new_neg)
+    final_pos = merge_clip(cur_pos, new_pos)
+    final_neg = merge_clip(cur_neg, new_neg)
 
-    # _write_bucket(mem.chat_memory, POS_PFX, final_pos)
-    # _write_bucket(mem.chat_memory, NEG_PFX, final_neg)
+    _write_bucket(mem.chat_memory, POS_PFX, final_pos)
+    _write_bucket(mem.chat_memory, NEG_PFX, final_neg)
     return("")
